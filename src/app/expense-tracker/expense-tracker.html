@@ -1,0 +1,181 @@
+<h1>Expense Tracker</h1>
+
+<form [formGroup]="expenseForm">
+
+    <div class="input-section">
+
+        <input type="text" placeholder="Category" formControlName="category">
+
+        <input type="number" placeholder="Amount" formControlName="amount">
+
+        <input type="date" formControlName="date">
+
+        <button class="add-btn" type="button" (click)="addExpense()">
+
+            {{ editingIndex !== null ? 'Update Expense' : 'Add Expense' }}
+
+        </button>
+
+    </div>
+
+    <div *ngIf="
+      expenseForm.get('category')?.invalid &&
+      expenseForm.get('category')?.touched
+    ">
+        Category is required
+    </div>
+
+    <div *ngIf="
+      expenseForm.get('amount')?.invalid &&
+      expenseForm.get('amount')?.touched
+    ">
+        Amount is required
+    </div>
+
+    <div *ngIf="
+      expenseForm.get('date')?.invalid &&
+      expenseForm.get('date')?.touched
+    ">
+        Date is required
+    </div>
+
+</form>
+
+<div class="dashboard">
+
+    <div class="card">
+        <h3>Total Expenses</h3>
+        <h2>₹{{ total }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>This Month Total</h3>
+        <h2>₹{{ getCurrentMonthTotal() }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Total Entries</h3>
+        <h2>{{ expenses.length }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Average Expense</h3>
+        <h2>
+            ₹{{ expenses.length ? (total / expenses.length) : 0 }}
+        </h2>
+    </div>
+
+</div>
+
+<div class="chart-container">
+
+    <canvas baseChart [data]="{
+      labels: pieChartLabels,
+      datasets: [
+        {
+          data: pieChartData
+        }
+      ]
+    }" [type]="'pie'">
+    </canvas>
+
+</div>
+
+<div class="search-container">
+
+    <input class="search-box" type="text" placeholder="Search expenses..." [(ngModel)]="searchText"
+        [ngModelOptions]="{standalone: true}">
+
+    <select class="filter-dropdown" [(ngModel)]="selectedCategory" [ngModelOptions]="{standalone: true}">
+
+        <option *ngFor="let category of categories" [value]="category">
+
+            {{ category }}
+
+        </option>
+
+    </select>
+
+    <select class="filter-dropdown" [(ngModel)]="sortOption" [ngModelOptions]="{standalone: true}">
+
+        <option value="none">
+            Sort By
+        </option>
+
+        <option value="newest">
+            Newest First
+        </option>
+
+        <option value="oldest">
+            Oldest First
+        </option>
+
+        <option value="amount-high">
+            Amount High → Low
+        </option>
+
+        <option value="amount-low">
+            Amount Low → High
+        </option>
+
+    </select>
+
+    <button class="export-btn" (click)="exportToExcel()">
+
+        Export Excel
+
+    </button>
+
+    
+
+</div>
+
+
+
+<div class="expenses-list">
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="
+          let expense of getFilteredExpenses();
+          let i = index
+        ">
+
+                <td>{{ expense.category }}</td>
+
+                <td>{{ expense.amount }}</td>
+
+                <td>{{ expense.date }}</td>
+
+                <td>
+
+                    <button class="edit-btn" (click)="editExpense(i)">
+                        Edit
+                    </button>
+
+                    <button class="delete-btn" (click)="deleteExpense(i)">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
