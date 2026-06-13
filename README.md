@@ -27,7 +27,8 @@ A feature-rich Expense Tracker application built with Angular.
 * HTML
 * CSS
 ## Live Demo
-🔗 https://github.com/08-Dhruvi/angular-expense-tracker
+https://08-dhruvi.github.io/angular-expense-tracker/
+
 ## Installation
 
 Clone the repository:
